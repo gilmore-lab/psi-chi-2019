@@ -25,13 +25,56 @@ if (!require(databraryapi)) {
   devtools::install_github("PLAY-behaviorome/databraryapi")
   library(databraryapi)
 }
+
+# Load other libraries
+library(tidyverse)
+library(ggplot2)
 ```
 
 The Databrary volume is 444, so we assign this to a variable: `r play_vol_id <- 444` so that we can index it later.
 
 We need to log in to Databrary to have access to these data.
+If you have logged-in before from the machine you are running this report, then you will be prompted to enter your Databrary ID (email address).
+If you have *not* logged-in before, you will be prompted to enter your Databrary ID (email address) and your Databrary password.
 
-```{r}
+```{r login}
+databraryapi::login_db()
+```
 
+# Gather data
+
+There are several data sources we need to gather and clean.
+Participant demographic data are stored in the Databrary spreadsheet.
+Parent report (survey) data are stored in the session with `session_name` == "Parent report data".
+Let's store that in a variable for later use: `r survey_data_session_name = "Parent report data"`.
+
+## Participant demographics
+
+We'll first gather the participant demographic data stored in the Databrary spreadsheet.
+
+```{r gather-participant-demographic-data}
+play_demog_raw <- databraryapi::download_session_csv(vol_id = play_vol_id)
+
+if (is.null(play_demog_raw)) {
+  stop("No data downloaded from Databrary. Are you logged in?")
+}
+
+# Select relevant spreadsheet columns, filter those with actual session data, and rename variables to use underscores
+play_demog <- play_demog_raw %>%
+  select(session_id, session_release, participant.gender,
+         participant.race, participant.ethnicity,
+         participant.gestational.age, participant.birth.weight,
+         participant.disability, participant.language, group.name,
+         context.language) %>%
+  filter(session_release %in% c('EXCERPTS', 'PRIVATE', 'SHARED')) %>%
+  rename(participant_gender = participant.gender,
+         participant_race = participant.race,
+         participant_ethnicity = participant.ethnicity,
+         participant_gestational_age = participant.gestational.age,
+         participant_birth_weight = participant.birth.weight,
+         participant_disability = participant.disability, 
+         participant_language = participant.language, 
+         group_name = group.name,
+         context_language = context.language)
 ```
 
