@@ -8,6 +8,9 @@ output:
     toc_levels: 3
     toc_float: true
     number_sections: true
+    code_folding: hide
+params: 
+  db_account: rogilmore@psu.edu
 ---
 
 # Purpose
@@ -29,16 +32,20 @@ if (!require(databraryapi)) {
 # Load other libraries
 library(tidyverse)
 library(ggplot2)
+
+## Variables for this particular volume and session.
+play_vol_id <- 444
+survey_data_session_name = "Parent report data"
 ```
 
-The Databrary volume is 444, so we assign this to a variable: `r play_vol_id <- 444` so that we can index it later.
+The Databrary volume is 444.
 
 We need to log in to Databrary to have access to these data.
 If you have logged-in before from the machine you are running this report, then you will be prompted to enter your Databrary ID (email address).
 If you have *not* logged-in before, you will be prompted to enter your Databrary ID (email address) and your Databrary password.
 
 ```{r login}
-databraryapi::login_db()
+databraryapi::login_db(params$db_account)
 ```
 
 # Gather data
@@ -46,7 +53,7 @@ databraryapi::login_db()
 There are several data sources we need to gather and clean.
 Participant demographic data are stored in the Databrary spreadsheet.
 Parent report (survey) data are stored in the session with `session_name` == "Parent report data".
-Let's store that in a variable for later use: `r survey_data_session_name = "Parent report data"`.
+Let's store that in a variable for later use: `r 
 
 ## Participant demographics
 
@@ -76,5 +83,102 @@ play_demog <- play_demog_raw %>%
          participant_language = participant.language, 
          group_name = group.name,
          context_language = context.language)
+```
+
+## Parent report data
+
+First, we need to list the data files available in the session where the parent report data are stored.
+
+```{r}
+parent_rpt_session_id <- play_demog_raw %>%
+  filter(session_name == survey_data_session_name) %>%
+  select(session_id) %>%
+  as.numeric()
+```
+
+Now, we list the data files in that session.
+
+```{r}
+surveys <- list_assets_in_session(vol_id = play_vol_id,
+                                  session_id = parent_rpt_session_id) %>%
+  select(asset_id, name)
+knitr::kable(surveys)
+```
+
+Let's download each of these separately.
+
+```{r}
+loco_df <- read_csv_data_as_df(session_id = parent_rpt_session_id, 
+                               asset_id = surveys$asset_id[1])
+childbirth_df <- read_csv_data_as_df(session_id = parent_rpt_session_id, 
+                                     asset_id = surveys$asset_id[2])
+family_df <- read_csv_data_as_df(session_id = parent_rpt_session_id, 
+                                 asset_id = surveys$asset_id[3])
+sleep_df <- read_csv_data_as_df(session_id = parent_rpt_session_id, 
+                                 asset_id = surveys$asset_id[4])
+childcare_df <- read_csv_data_as_df(session_id = parent_rpt_session_id, 
+                                 asset_id = surveys$asset_id[5])
+lang_exp_df <- read_csv_data_as_df(session_id = parent_rpt_session_id, 
+                                 asset_id = surveys$asset_id[6])
+```
+
+# Plot data
+
+Let's set some plot thematic elements.
+
+```{r}
+play.palette <- scale_fill_manual(values=c("blue2", "firebrick2", "chartreuse2", "darkorchid2"))
+play.theme <-   
+  theme_classic() +
+  theme(legend.position = "bottom",
+        legend.title = element_blank(),
+        legend.text = element_text(size = rel(1.2)),
+        axis.title = element_text(size = rel(1.5), face ="bold"),
+        axis.text.x = element_text(size = rel(1.2)),
+        axis.text.y = element_text(size = rel(1.2)),
+        axis.line = element_blank(),
+        axis.title.y = element_blank())
+```
+
+## Participant demographics
+
+```{r}
+play_demog %>% 
+  ggplot(.) +
+  aes(x = participant_gestational_age, y = participant_birth_weight, color = participant_race) +
+  geom_point()
+```
+
+## Parent surveys
+
+These are some illustrative plots.
+
+### Language exposure
+
+```{r}
+lang_exp_df %>%
+  ggplot(.) +
+  aes(x = language) +
+  facet_grid(exposure_context ~ .) +
+  geom_histogram(stat='count') +
+  play.theme
+```
+
+### Locomotion onset
+
+```{r}
+loco_df %>%
+  gather(key = milestone, value = age.mos, hkcrawl_onset_mos, walk_onset_mos) %>%
+  mutate(milestone = factor(milestone, labels = c("crawl", "walk"))) %>%
+  # arrange(desc(age.mos)) %>%
+  ggplot() +
+  aes(x = age.mos, y = id) +
+  geom_point(aes(shape = milestone, color = milestone)) +
+  geom_line(aes(group = id)) +
+  xlab("Age (months)") +
+  ylab("Participant ID") +
+  geom_rug(aes(x = age.mos, group = milestone, color = milestone),
+           sides = "b") +
+  play.theme
 ```
 
