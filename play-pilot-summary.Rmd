@@ -196,6 +196,55 @@ play_demog %>%
 
 These are some illustrative plots.
 
+### Sleep hygiene
+
+We have to convert the `sleep.time` and `wake.time` variables so that they can be plotted.
+It looks like the `lubridate` package is a good option.
+
+```{r test-code}
+# sleep <- lubridate::ymd_hms("2001-01-01 20:30:00")
+# awake <- lubridate::ymd_hms("2001-01-02 07:00:00")
+# (night_hrs <- awake-sleep)
+
+# Helper functions for conversion
+sleep_time <- function(hhmmss){
+  lubridate::ymd_hms(paste0("2001-01-01 ", hhmmss))
+}
+wake_time <- function(hhmmss){
+  # One date later than sleep time
+  lubridate::ymd_hms(paste0("2001-01-02 ", hhmmss))
+}
+
+time_asleep <- function(sleep_tm, awake_tm){
+  wake_time(awake_tm) - sleep_time(sleep_tm)
+}
+
+sleep_df <- sleep_df %>%
+  mutate(sleep_tm = sleep_time(sleep.time), 
+         wake_tm = wake_time(wake.time), 
+         nightsleep_hrs = wake_tm - sleep_tm)
+```
+
+Now, we can plot.
+
+```{r}
+sleep_df %>%
+  ggplot(.) +
+  aes(x = nightsleep_hrs) +
+  geom_histogram(bins = 10) +
+  play.theme
+```
+
+### Childcare
+
+```{r}
+childcare_df %>%
+  ggplot(.) +
+  aes(x = childcare_hours, fill = childcare_alt) +
+  geom_histogram(bins = 30) +
+  play.theme
+```
+
 ### Language exposure
 
 ```{r}
@@ -215,7 +264,6 @@ loco_df %>%
          hkcrawl_onset_mos, walk_onset_mos) %>%
   mutate(milestone = factor(milestone, 
                             labels = c("crawl", "walk"))) %>%
-  # arrange(desc(age.mos)) %>%
   ggplot() +
   aes(x = age.mos, y = id) +
   geom_point(aes(shape = milestone, color = milestone)) +
