@@ -85,6 +85,12 @@ play_demog <- play_demog_raw %>%
          context_language = context.language)
 ```
 
+### Structure of demographic data file
+
+```{r}
+str(play_demog)
+```
+
 ## Parent report data
 
 First, we need to list the data files available in the session where the parent report data are stored.
@@ -108,18 +114,55 @@ knitr::kable(surveys)
 Let's download each of these separately.
 
 ```{r}
-loco_df <- read_csv_data_as_df(session_id = parent_rpt_session_id, 
-                               asset_id = surveys$asset_id[1])
-childbirth_df <- read_csv_data_as_df(session_id = parent_rpt_session_id, 
-                                     asset_id = surveys$asset_id[2])
-family_df <- read_csv_data_as_df(session_id = parent_rpt_session_id, 
-                                 asset_id = surveys$asset_id[3])
-sleep_df <- read_csv_data_as_df(session_id = parent_rpt_session_id, 
-                                 asset_id = surveys$asset_id[4])
 childcare_df <- read_csv_data_as_df(session_id = parent_rpt_session_id, 
+                               asset_id = surveys$asset_id[1])
+loco_df <- read_csv_data_as_df(session_id = parent_rpt_session_id, asset_id = surveys$asset_id[2])
+childbirth_df <- read_csv_data_as_df(session_id = parent_rpt_session_id, 
+                                 asset_id = surveys$asset_id[3])
+family_df <- read_csv_data_as_df(session_id = parent_rpt_session_id, 
+                                 asset_id = surveys$asset_id[4])
+sleep_df <- read_csv_data_as_df(session_id = parent_rpt_session_id, 
                                  asset_id = surveys$asset_id[5])
 lang_exp_df <- read_csv_data_as_df(session_id = parent_rpt_session_id, 
                                  asset_id = surveys$asset_id[6])
+```
+
+### Examining structure of parent report data files
+
+#### Locomotor milestones
+
+```{r}
+str(loco_df)
+```
+
+#### Childbirth and health
+
+```{r}
+str(childbirth_df)
+```
+
+#### Family structure
+
+```{r}
+str(family_df)
+```
+
+#### Sleep hygiene
+
+```{r}
+str(sleep_df)
+```
+
+#### Childcare arrangements
+
+```{r}
+str(childcare_df)
+```
+
+#### Language exposure
+
+```{r}
+str(lang_exp_df)
 ```
 
 # Plot data
@@ -168,8 +211,10 @@ lang_exp_df %>%
 
 ```{r}
 loco_df %>%
-  gather(key = milestone, value = age.mos, hkcrawl_onset_mos, walk_onset_mos) %>%
-  mutate(milestone = factor(milestone, labels = c("crawl", "walk"))) %>%
+  gather(key = milestone, value = age.mos, 
+         hkcrawl_onset_mos, walk_onset_mos) %>%
+  mutate(milestone = factor(milestone, 
+                            labels = c("crawl", "walk"))) %>%
   # arrange(desc(age.mos)) %>%
   ggplot() +
   aes(x = age.mos, y = id) +
