@@ -13,5 +13,9 @@ Note that the code will fail unless the user has a valid account on Databrary.
 
 - There is a poster template (Psi-Chi-template) located on <https://www.overleaf.com/>.
 - Sign in using the lab email address
-- Copy the template then rename it to Psi-Chi-2019-LastName)
+- Copy the template then rename it.
+    - Check the box next to the project name 
+    - Select the 'More' button in the upper right corner
+    - Select 'Make a copy'
+    - Rename the Psi-Chi-template (Copy) to Psi-Chi-2019-LastName
 - Upload any relevant images to add to the poster in the /img folder
