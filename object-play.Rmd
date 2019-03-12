@@ -1,0 +1,38 @@
+---
+title: "Object play"
+author: ""
+date: "`r Sys.time()`"
+output: 
+  html_document:
+    toc: true
+    toc_levels: 3
+    toc_float: true
+    number_sections: true
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Motivation
+
+# Sample selection
+
+X-mo-olds drawn from 
+
+Adolph, K., Tamis-LeMonda, C. & Gilmore, R.O. (2017). PLAY Project: Pilot Data Collections. Databrary. Retrieved March 12, 2019 from https://nyu.databrary.org/volume/444#panel-data.
+
+# Code definitions
+
+# Coding procedure
+
+## Acquire data
+
+1. Download session data (video and Datavyu files) from Databrary.
+
+# Examples
+
+## Participant 13
+
+<https://nyu.databrary.org/slot/18818/101800000,101929771/asset/85723/download?inline=true>

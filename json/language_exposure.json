@@ -1,0 +1,26 @@
+{
+  "measure_name": "Language exposure",
+  "domain": "language",
+  "URL": "",
+  "id": {
+    "LongName": "Target dyad's family identifier",
+    "Description" : "Unique identifier for each participant dyad",
+    "Levels": "",
+    "Units": "",
+    "TermURL": ""
+  },
+  "language": {
+    "LongName": "A language the child hears or is spoken to in",
+    "Description" : "A language the child hears or is spoken to in",
+    "Levels": "",
+    "Units": "",
+    "TermURL": ""
+  },
+  "exposure_context": {
+    "LongName": "Context language is experienced",
+    "Description" : "",
+    "Levels": ["childcare", "home", "to_child"],
+    "Units": "",
+    "TermURL": ""
+  }
+}

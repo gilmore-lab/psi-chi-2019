@@ -1,0 +1,45 @@
+---
+title: "Crawling mode"
+author: "Sarah Shahriar"
+date: "`r Sys.time()`"
+output: 
+  html_document:
+    toc: true
+    toc_levels: 3
+    toc_float: true
+    number_sections: true
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Motivation
+
+Evaluate 'mode' of crawling in PLAY project infants.
+
+# Sample selection
+
+12-mo-olds drawn from 
+
+Adolph, K., Tamis-LeMonda, C. & Gilmore, R.O. (2017). PLAY Project: Pilot Data Collections. Databrary. Retrieved March 12, 2019 from https://nyu.databrary.org/volume/444#panel-data.
+
+# Code definitions
+
+## Crawling vs. other locomotion
+
+## Hand onset
+
+## Contralateral vs. unilateral gait
+
+# Coding procedure
+
+## Acquire data
+
+1. Download session data (video and Datavyu files) from Databrary.
+    - Participant 8: <https://nyu.databrary.org/volume/444/slot/18811/->
+    - Participant 13: <https://nyu.databrary.org/volume/444/slot/18818/->
+2. Examine each instance of locomotion using Datavyu file, code == 'l'.
+3. 
+    

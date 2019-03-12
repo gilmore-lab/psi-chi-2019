@@ -1,0 +1,40 @@
+{
+  "measure_name": "Child care experience",
+  "domain": "childcare",
+  "URL": "",
+  "id": {
+    "LongName": "Target dyad's family identifier",
+    "Description" : "Unique identifier for each participant dyad",
+    "Levels": "",
+    "Units": "",
+    "TermURL": ""
+  },
+  "childcare_alt": {
+    "LongName": "",
+    "Description" : "",
+    "Levels": "",
+    "Units": "",
+    "TermURL": ""
+  },
+  "childcare_hrs": {
+    "LongName": "Hours in childcare",
+    "Description" : "Hours in childcare setting per week",
+    "Levels": "",
+    "Units": "hours",
+    "TermURL": ""
+  },
+  "childcare_other_children": {
+    "LongName": "Number of other children in childcare",
+    "Description" : "Number of other children in childcare setting",
+    "Levels": "",
+    "Units": "",
+    "TermURL": ""
+  },
+  "childcare_init_age": {
+    "LongName": "Age began childcare",
+    "Description" : "Age in months childcare began",
+    "Levels": "",
+    "Units": "months",
+    "TermURL": ""
+  }
+}

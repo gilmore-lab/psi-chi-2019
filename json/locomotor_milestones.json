@@ -1,0 +1,54 @@
+{
+  "measure_name": "Locomotor milestones",
+  "domain": "language",
+  "URL": "",
+  "id": {
+    "LongName": "Target dyad's family identifier",
+    "Description" : "Unique identifier for each participant dyad",
+    "Levels": "",
+    "Units": "",
+    "TermURL": ""
+  },
+  "hkcrawl_onset_date": {
+    "LongName": "Hand and knees crawling onset date",
+    "Description" : "",
+    "Levels": "",
+    "Units": "",
+    "TermURL": ""
+  },
+  "hkcrawl_onset_mos": {
+    "LongName": "Hand and knees crawling onset age (mos)",
+    "Description" : "",
+    "Levels": "",
+    "Units": "months",
+    "TermURL": ""
+  },
+    "walk_onset_date": {
+    "LongName": "Walking onset date",
+    "Description" : "",
+    "Levels": "",
+    "Units": "",
+    "TermURL": ""
+  },
+    "walk_onset_mos": {
+    "LongName": "Walking onset age (mos)",
+    "Description" : "",
+    "Levels": "",
+    "Units": "months",
+    "TermURL": ""
+  },
+  "walk_onset_src": {
+    "LongName": "Source of parent report",
+    "Description" : "",
+    "Levels": ["phone", "babybook", "calendar", "NA"],
+    "Units": "",
+    "TermURL": ""
+  },
+  "Interview.Comments": {
+    "LongName": "Context language is experienced",
+    "Description" : "",
+    "Levels": "",
+    "Units": "",
+    "TermURL": ""
+  }
+}
