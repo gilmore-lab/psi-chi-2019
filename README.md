@@ -12,3 +12,14 @@ Note that the code will fail unless the user has a valid account on Databrary.
 <https://gilmore-lab.github.io/psi-chi-2019/crawling-mode.html>
 - `object-play.html` an HTML format report. You may view it at:
 <https://gilmore-lab.github.io/psi-chi-2019/object-play.html>
+
+## Create Poster  
+
+- There is a poster template (Psi-Chi-template) located on <https://www.overleaf.com/>.
+- Sign in using the lab email address
+- Copy the template then rename it.
+    - Check the box next to the project name 
+    - Select the 'More' button in the upper right corner
+    - Select 'Make a copy'
+    - Rename the Psi-Chi-template (Copy) to Psi-Chi-2019-LastName
+- Upload any relevant images to add to the poster in the /img folder
