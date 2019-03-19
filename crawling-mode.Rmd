@@ -1,5 +1,5 @@
 ---
-title: "Crawling mode"
+title: "On the Move: A study on gait style and preference in early infancy"
 author: "Sarah Shahriar"
 date: "`r Sys.time()`"
 output: 
@@ -28,11 +28,11 @@ Adolph, K., Tamis-LeMonda, C. & Gilmore, R.O. (2017). PLAY Project: Pilot Data C
 # Code definitions
 
 ## Crawling vs. other locomotion
-
+Crawling is defined as locomotion in which the infant independently uses both right and left hands and knees with contact to the floor to move across a distance greater than 2 feet.
 ## Hand onset
-
+Hand onset is defined as the specific hand used to initiate hands-knees crawling.
 ## Contralateral vs. unilateral gait
-
+Contralateral gait is defined as the usage of opposite hand and knee to move independently across a distance greater than 2 feet. Unilateral gait is defined as the usage of same-side hand and knee to move independently across a distance greater than 2 feet. 
 # Coding procedure
 
 ## Acquire data
