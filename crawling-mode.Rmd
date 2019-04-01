@@ -34,12 +34,16 @@ Hand onset is defined as the specific hand used to initiate hands-knees crawling
 ## Contralateral vs. unilateral gait
 Contralateral gait is defined as the usage of opposite hand and knee to move independently across a distance greater than 2 feet. Unilateral gait is defined as the usage of same-side hand and knee to move independently across a distance greater than 2 feet. 
 # Coding procedure
-
+1. Observe infant locomotion without inputs of coding initially.
+2. Rewatch locomotion to observe unique hand initiation and crawling mode.
+3. Collect specific onset and offset of infant locomotion.
+4. Compile data for each participant and compare results between subjects.
 ## Acquire data
 
 1. Download session data (video and Datavyu files) from Databrary.
     - Participant 8: <https://nyu.databrary.org/volume/444/slot/18811/->
     - Participant 13: <https://nyu.databrary.org/volume/444/slot/18818/->
 2. Examine each instance of locomotion using Datavyu file, code == 'l'.
-3. 
+3. Utilize Datavyu to collect the total time each participant spent using a specific mode of crawling.
+4. 
     
