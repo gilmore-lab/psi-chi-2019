@@ -1,5 +1,5 @@
 ---
-title: "On the Move: A study on gait style and preference in early infancy"
+title: "On the move: A study on gait style and preference in early infancy"
 author: "Sarah Shahriar"
 date: "`r Sys.time()`"
 output: 
@@ -28,22 +28,120 @@ Adolph, K., Tamis-LeMonda, C. & Gilmore, R.O. (2017). PLAY Project: Pilot Data C
 # Code definitions
 
 ## Crawling vs. other locomotion
+
 Crawling is defined as locomotion in which the infant independently uses both right and left hands and knees with contact to the floor to move across a distance greater than 2 feet.
+
 ## Hand onset
+
 Hand onset is defined as the specific hand used to initiate hands-knees crawling.
+
 ## Contralateral vs. unilateral gait
 Contralateral gait is defined as the usage of opposite hand and knee to move independently across a distance greater than 2 feet. Unilateral gait is defined as the usage of same-side hand and knee to move independently across a distance greater than 2 feet. 
+
 # Coding procedure
 1. Observe infant locomotion without inputs of coding initially.
 2. Rewatch locomotion to observe unique hand initiation and crawling mode.
 3. Collect specific onset and offset of infant locomotion.
 4. Compile data for each participant and compare results between subjects.
-## Acquire data
+
+## Acquire data & code data
 
 1. Download session data (video and Datavyu files) from Databrary.
     - Participant 8: <https://nyu.databrary.org/volume/444/slot/18811/->
     - Participant 13: <https://nyu.databrary.org/volume/444/slot/18818/->
 2. Examine each instance of locomotion using Datavyu file, code == 'l'.
 3. Utilize Datavyu to collect the total time each participant spent using a specific mode of crawling.
-4. 
-    
+4.
+
+# Data analysis
+
+## Export from Datavyu
+
+The files are located in `~/Box\ Sync/b-gilmore-lab-group\ Shared/gilmore-lab/pubs/psi-chi/2019/crawl-type/`.
+
+Let's list them.
+
+```{r}
+data_dir <- '~/Box\ Sync/b-gilmore-lab-group\ Shared/gilmore-lab/pubs/psi-chi/2019/crawl-type/'
+
+dv_fl <- list.files(data_dir, pattern = '\\.opf$', full.names = TRUE)
+dv_fl
+```
+
+Extract into subject-specific directories, e.g., `opf/13`, etc.
+
+```{r}
+library(databraryapi)
+extract_dv(in_dir = data_dir, in_fn = dv_fl[1], out_dir = 'opf/13')
+extract_dv(in_dir = data_dir, in_fn = dv_fl[2], out_dir = 'opf/08')
+```
+
+## Convert to CSVs
+
+Convert the Datavyu files to CSVs.
+
+```{r}
+# dv_to_csv(dv_dir = 'opf/13', out_fn ='opf/13/tmp.csv', vb = TRUE)
+# dv_to_csv(dv_dir = 'opf/08', vb = TRUE)
+```
+
+## Read data into R
+
+Now we can read the Datavyu files as data frames.
+
+```{r}
+library(tidyverse)
+s13 <- read_csv('opf/13/13.csv')
+s08 <- read_csv('opf/08/08.csv')
+```
+
+## Select relevant codes
+
+Select hands and knees crawling episodes.
+
+```{r}
+hk <- s08 %>% 
+  filter(code == 'Crawling', code.value == 'hk')
+```
+
+
+Select code `c`.
+
+## Visualize `R_Initiation` and `L_Initiation` episode data
+
+```{r}
+code_r <- s08 %>% 
+  filter(code == 'R_Initiation', code.value == 'c')
+```
+
+```{r}
+code_l <- s08 %>% 
+  filter(code == 'L_Initiation', code.value == 'c')
+```
+
+Define function to compute durations
+
+```{r}
+time_conv <- function(hhmmssmmm) {
+  stringr::str_replace(hhmmssmmm, pattern = ':([0-9]{3})', replacement = '\\.\\1')
+}
+
+code_r <- code_r %>%
+  mutate(onset_hhmmss = lubridate::hms(time_conv(onset)),
+         offset_hhmmss = lubridate::hms(time_conv(offset))) %>%
+  mutate(duration = lubridate::as.period(offset_hhmmss - onset_hhmmss, unit = 'sec'))
+
+hist(code_r$duration)
+summary(code_r$duration)
+```
+
+```{r}
+code_l <- code_l %>%
+  mutate(onset_hhmmss = lubridate::hms(time_conv(onset)),
+         offset_hhmmss = lubridate::hms(time_conv(offset))) %>%
+  mutate(duration = lubridate::as.period(offset_hhmmss - onset_hhmmss, unit = 'sec'))
+
+hist(code_l$duration)
+summary(code_l$duration)
+```
+

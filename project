@@ -1,0 +1,17 @@
+!project
+dbFile: PLAY_Locomotion_Code.opf.S13.opf
+name: PLAY_Locomotion_Code.opf.S13
+origpath: '/Users/gilmorelab/Desktop/Shahriar '
+version: 5
+viewerSettings:
+- !vs
+  classifier: datavyu.video
+  feed: /Users/gilmorelab/Desktop/Shahriar /databrary444-Adolph-Tamis-LeMonda-Gilmore-PLAY-pilot-data-18818-85705-S_13_1-Hour.mov.mp4
+  plugin: org.datavyu.plugins.qtkitplayer.QTKitViewer
+  settingsId: '1'
+  trackSettings: !ts
+    bookmark: '-1'
+    bookmarks: []
+    locked: false
+    version: 2
+  version: 3
