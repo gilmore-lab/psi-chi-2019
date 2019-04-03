@@ -1,0 +1,69 @@
+---
+title: "walk-sleep"
+author: "Michelle Mendez & Rick O. Gilmore"
+date: "`r Sys.time()`"
+output: 
+  html_document:
+    toc: true
+    toc_levels: 3
+    toc_float: true
+    number_sections: true
+    code_folding: hide
+    self_contained: false
+---
+
+```{r setup, echo=FALSE, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+if (!require(devtools)) {
+  install.packages('devtools')
+}
+library(devtools)
+
+if (!require(databraryapi)) {
+  devtools::install_github('PLAY-behaviorome/databraryapi')
+}
+library(databraryapi)
+
+if (!require(tidyverse)) {
+  install.packages('tidyverse')
+}
+library(tidyverse)
+
+if (!require(ggplot2)) {
+  install.packages('ggplot2')
+}
+library(ggplot2)
+```
+
+# Gather
+
+Import data from a csv file stored in `walk-sleep_data\`.
+
+```{r}
+walk_sleep <- read_csv('walk-sleep_data/walk-sleep.csv')
+```
+
+# Clean
+
+We need to make sure that `crawl_mos`, and `sleep_hrs` are numbers.
+
+```{r}
+walk_sleep$crawl_mos <- as.numeric(walk_sleep$crawl_mos)
+walk_sleep$sleep_hrs <- lubridate::hms(walk_sleep$sleep_hrs)
+```
+
+# Visualize
+
+Hours of night sleep by age at walk onset.
+
+```{r walk-onset-sleep-hrs}
+walk_sleep %>%
+  ggplot() +
+  aes(x = walk_mos, y = as.numeric(sleep_hrs, "hours")) +
+  geom_point() +
+  geom_smooth(method='lm', formula = y ~ x) +
+  xlab('Walking onset (mos)') +
+  ylab('Night sleep (hrs)')
+```
+
+# Analyze
