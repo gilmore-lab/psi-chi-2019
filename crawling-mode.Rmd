@@ -11,8 +11,27 @@ output:
     code_folding: hide
 ---
 
-```{r setup, include=FALSE}
+```{r setup, echo=FALSE, message=FALSE, warning=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+if (!require(devtools)) {
+  install.packages('devtools')
+}
+library(devtools)
+
+if (!require(databraryapi)) {
+  devtools::install_github('PLAY-behaviorome/databraryapi')
+}
+library(databraryapi)
+
+if (!require(tidyverse)) {
+  install.packages('tidyverse')
+}
+library(tidyverse)
+
+if (!require(ggplot2)) {
+  install.packages('ggplot2')
+}
+library(ggplot2)
 ```
 
 # Motivation
@@ -57,7 +76,7 @@ Contralateral gait is defined as the usage of opposite hand and knee to move ind
 
 ## Export from Datavyu
 
-The files are located in `~/Box\ Sync/b-gilmore-lab-group\ Shared/gilmore-lab/pubs/psi-chi/2019/crawl-type/`.
+The Datavyu (`.opf`) files are located in `~/Box\ Sync/b-gilmore-lab-group\ Shared/gilmore-lab/pubs/psi-chi/2019/crawl-type/`.
 
 Let's list them.
 
@@ -68,12 +87,15 @@ dv_fl <- list.files(data_dir, pattern = '\\.opf$', full.names = TRUE)
 dv_fl
 ```
 
-Extract into subject-specific directories, e.g., `opf/13`, etc.
+Extract into subject-specific directories, e.g., `/13`, etc.
 
 ```{r}
-library(databraryapi)
-extract_dv(in_dir = data_dir, in_fn = dv_fl[1], out_dir = 'opf/13')
-extract_dv(in_dir = data_dir, in_fn = dv_fl[2], out_dir = 'opf/08')
+# Extract sub number and reformat
+subs <- stringr::str_match(dv_fl, pattern = '\\.S([0-9]+)\\.')[,2]
+subs <- stringr::str_pad(subs, 2, pad='0')
+
+extract_dv(in_dir = data_dir, in_fn = dv_fl[1], out_dir = paste0('crawling-mode_data/', subs[1]))
+extract_dv(in_dir = data_dir, in_fn = dv_fl[2], out_dir = paste0('crawling-mode_data/', subs[2]))
 ```
 
 ## Convert to CSVs
@@ -81,8 +103,8 @@ extract_dv(in_dir = data_dir, in_fn = dv_fl[2], out_dir = 'opf/08')
 Convert the Datavyu files to CSVs.
 
 ```{r}
-# dv_to_csv(dv_dir = 'opf/13', out_fn ='opf/13/tmp.csv', vb = TRUE)
-# dv_to_csv(dv_dir = 'opf/08', vb = TRUE)
+s13_csv <- dv_to_csv(dv_dir = 'crawling-mode_data/13', vb = TRUE)
+s08_csv <- dv_to_csv(dv_dir = 'crawling-mode_data/08', vb = TRUE)
 ```
 
 ## Read data into R
@@ -91,8 +113,16 @@ Now we can read the Datavyu files as data frames.
 
 ```{r}
 library(tidyverse)
-s13 <- read_csv('opf/13/13.csv')
-s08 <- read_csv('opf/08/08.csv')
+s13 <- read_csv(s13_csv)
+s08 <- read_csv(s08_csv)
+```
+
+## Add duration field
+
+```{r}
+s08 <- s08 %>%
+  mutate(duration = lubridate::as.period(offset - onset, unit = 'sec')) %>%
+  filter(duration > 0)
 ```
 
 ## Select relevant codes
@@ -100,10 +130,9 @@ s08 <- read_csv('opf/08/08.csv')
 Select hands and knees crawling episodes.
 
 ```{r}
-hk <- s08 %>% 
+hk <- s08 %>%
   filter(code == 'Crawling', code.value == 'hk')
 ```
-
 
 Select code `c`.
 
@@ -119,29 +148,28 @@ code_l <- s08 %>%
   filter(code == 'L_Initiation', code.value == 'c')
 ```
 
-Define function to compute durations
+Combine `R_Initiation` and `L_Initiation` into single field.
 
 ```{r}
-time_conv <- function(hhmmssmmm) {
-  stringr::str_replace(hhmmssmmm, pattern = ':([0-9]{3})', replacement = '\\.\\1')
-}
+crawl_init <- s08 %>% 
+  filter(code %in% c('R_Initiation', 'L_Initiation')) %>%
+  rename(hand = code) %>%
+  select(hand, onset, offset, duration)
 
-code_r <- code_r %>%
-  mutate(onset_hhmmss = lubridate::hms(time_conv(onset)),
-         offset_hhmmss = lubridate::hms(time_conv(offset))) %>%
-  mutate(duration = lubridate::as.period(offset_hhmmss - onset_hhmmss, unit = 'sec'))
-
-hist(code_r$duration)
-summary(code_r$duration)
+crawl_init$hand <- stringr::str_sub(crawl_init$hand, 1, 1)
 ```
+
+# Visualize
 
 ```{r}
-code_l <- code_l %>%
-  mutate(onset_hhmmss = lubridate::hms(time_conv(onset)),
-         offset_hhmmss = lubridate::hms(time_conv(offset))) %>%
-  mutate(duration = lubridate::as.period(offset_hhmmss - onset_hhmmss, unit = 'sec'))
-
-hist(code_l$duration)
-summary(code_l$duration)
+crawl_init %>% 
+  ggplot() +
+  aes(x = hand, y = duration) +
+  geom_boxplot() +
+  geom_point() +
+  xlab('Bout initiation hand') +
+  ylab('Bout duration (secs)') +
+  ggtitle('Participant 08')
 ```
+
 
