@@ -9,6 +9,7 @@ output:
     toc_float: true
     number_sections: true
     code_folding: hide
+    self_contained: false
 ---
 
 ```{r setup, echo=FALSE, message=FALSE, warning=FALSE}
@@ -58,6 +59,7 @@ Hand onset is defined as the specific hand used to initiate hands-knees crawling
 Contralateral gait is defined as the usage of opposite hand and knee to move independently across a distance greater than 2 feet. Unilateral gait is defined as the usage of same-side hand and knee to move independently across a distance greater than 2 feet. 
 
 # Coding procedure
+
 1. Observe infant locomotion without inputs of coding initially.
 2. Rewatch locomotion to observe unique hand initiation and crawling mode.
 3. Collect specific onset and offset of infant locomotion.
@@ -161,7 +163,7 @@ crawl_init$hand <- stringr::str_sub(crawl_init$hand, 1, 1)
 
 # Visualize
 
-```{r}
+```{r left-right-durations-hist}
 crawl_init %>% 
   ggplot() +
   aes(x = hand, y = duration) +
@@ -172,4 +174,5 @@ crawl_init %>%
   ggtitle('Participant 08')
 ```
 
+Note that the figure(s) are located in `crawling-mode_files/figure-html/`.
 

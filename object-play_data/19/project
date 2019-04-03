@@ -1,0 +1,17 @@
+!project
+dbFile: s19_24mos.opf
+name: s19_24mos
+origpath: /Users/gilmorelab/Desktop/Object Play Data
+version: 5
+viewerSettings:
+- !vs
+  classifier: datavyu.video
+  feed: /Users/gilmorelab/Downloads/databrary444-Adolph-Tamis-LeMonda-Gilmore-PLAY-pilot-data-18825-85863-S_19_Solitary_Play.mov.mp4
+  plugin: org.datavyu.plugins.qtkitplayer.QTKitViewer
+  settingsId: '1'
+  trackSettings: !ts
+    bookmark: '-1'
+    bookmarks: []
+    locked: false
+    version: 2
+  version: 3

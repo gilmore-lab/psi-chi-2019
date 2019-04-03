@@ -9,10 +9,31 @@ output:
     toc_float: true
     number_sections: true
     code_folding: hide
+params:
+  db_account: rogilmore@psu.edu
 ---
 
-```{r setup, include=FALSE}
+```{r setup, echo=FALSE, message=FALSE, warning=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+if (!require(devtools)) {
+  install.packages('devtools')
+}
+library(devtools)
+
+if (!require(databraryapi)) {
+  devtools::install_github('PLAY-behaviorome/databraryapi')
+}
+library(databraryapi)
+
+if (!require(tidyverse)) {
+  install.packages('tidyverse')
+}
+library(tidyverse)
+
+if (!require(ggplot2)) {
+  install.packages('ggplot2')
+}
+library(ggplot2)
 ```
 
 # Motivation
@@ -31,10 +52,161 @@ Adolph, K., Tamis-LeMonda, C. & Gilmore, R.O. (2017). PLAY Project: Pilot Data C
 
 1. Download session data (video and Datavyu files) from Databrary.
 
+2. Process OPF files
+
 # Examples
 
 ## Participant 13
 
 <https://nyu.databrary.org/slot/18818/101800000,101929771/asset/85723/download?inline=true>
+
+# Data analysis
+
+## Export from Datavyu
+
+The Datavyu (`.opf`) files are located in `~/Box\ Sync/b-gilmore-lab-group\ Shared/gilmore-lab/pubs/psi-chi/2019/grasp-stack`.
+
+Let's list them.
+
+```{r}
+data_dir <- '~/Box\ Sync/b-gilmore-lab-group\ Shared/gilmore-lab/pubs/psi-chi/2019/grasp-stack'
+
+dv_fl <- list.files(data_dir, pattern = '\\.opf$', full.names = TRUE)
+dv_fl
+```
+
+Extract into subject-specific directories, e.g., `/13`, etc.
+
+```{r}
+# Extract sub number and reformat
+subs <- stringr::str_match(dv_fl, pattern = '_s([0-9]+)')[,2]
+subs <- stringr::str_pad(subs, 2, pad='0')
+
+for (i in 1:length(subs)) {
+  databraryapi::extract_dv(in_dir = data_dir, in_fn = dv_fl[i], 
+             out_dir = paste0('object-play_data/', subs[i]))
+}
+```
+
+## Convert to CSVs
+
+Convert the Datavyu files to CSVs.
+
+```{r}
+fl <- list.files('object-play_data', full.names = TRUE)
+csv_list <- unlist(lapply(fl, databraryapi::dv_to_csv))
+```
+
+## Read data into R
+
+Now we can read the Datavyu files as data frames.
+
+```{r}
+#csvs <- lapply(csv_list, read_csv)
+s09 <- read_csv(csv_list[1])
+s13 <- read_csv(csv_list[2])
+s14 <- read_csv(csv_list[3])
+s17 <- read_csv(csv_list[4])
+s19 <- read_csv(csv_list[5])
+s20 <- read_csv(csv_list[6])
+```
+
+## Add duration field and subject fields
+
+```{r}
+s09 <- s09 %>%
+  mutate(duration = lubridate::as.period(offset - onset, unit = 'sec')) %>%
+  filter(duration > 0) %>%
+  mutate(sub = 's09')
+
+s13 <- s13 %>%
+  mutate(duration = lubridate::as.period(offset - onset, unit = 'sec')) %>%
+  filter(duration > 0) %>%
+  mutate(sub = 's13')
+
+s14 <- s14 %>%
+  mutate(duration = lubridate::as.period(offset - onset, unit = 'sec')) %>%
+  filter(duration > 0) %>%
+  mutate(sub = 's14')
+
+s17 <- s17 %>%
+  mutate(duration = lubridate::as.period(offset - onset, unit = 'sec')) %>%
+  filter(duration > 0) %>%
+  mutate(sub = 's17')
+
+s19 <- s19 %>%
+  mutate(duration = lubridate::as.period(offset - onset, unit = 'sec')) %>%
+  filter(duration > 0) %>%
+  mutate(sub = 's19')
+
+s20 <- s20 %>%
+  mutate(duration = lubridate::as.period(offset - onset, unit = 'sec')) %>%
+  filter(duration > 0) %>%
+  mutate(sub = 's20')
+```
+
+## Merge separate data files into one
+
+```{r}
+data_list <- list(s09, s13, s14, s17, s19, s20)
+object_play <- Reduce(function(x,y) merge(x,y, all=TRUE), data_list)
+object_play <- object_play %>%
+  mutate(ID = as.numeric(stringr::str_sub(sub, 2,3))) %>%
+  select(-sub)
+```
+
+## Select relevant codes
+
+List the unique codes.
+
+```{r}
+unique(object_play$code)
+```
+
+There are three types of codes, `r unique(object_play$code)[1]`, `r unique(object_play$code)[2]`, and `r unique(object_play$code)[3]`.
+
+## Import demographic data from Databrary
+
+```{r}
+login_db(params$db_account)
+vol_444 <- databraryapi::download_session_csv(vol_id = 444)
+sub_info <- vol_444 %>%
+  filter(participant.ID %in% as.numeric(subs)) %>%
+  select(participant.ID, participant.gender, participant.race, 
+         participant.ethnicity, participant.gestational.age, 
+         participant.birth.weight, group.name) %>%
+  rename(ID = participant.ID, 
+         gender = participant.gender, race = participant.race,
+         ethnicity = participant.ethnicity, 
+         gest_age = participant.gestational.age, 
+         birth_weight = participant.birth.weight, 
+         age_group = group.name)
+```
+
+## Merge demographic data with coded data
+
+```{r}
+object_merged <- dplyr::left_join(object_play, sub_info, by = c('ID'))
+```
+
+# Visualize
+
+```{r code-durations-boxplot}
+object_merged %>% 
+  ggplot() +
+  aes(x = code, y = duration, color = age_group, shape = gender) +
+  geom_boxplot() +
+  geom_point() +
+  facet_wrap(ID ~ .) +
+  xlab('Behavior type') +
+  ylab('Duration (secs)')
+```
+
+```{r}
+xtabs(formula = ~ code + ID, data = object_play) %>%
+  knitr::kable()
+```
+
+Note that the figure(s) are located in `object-play_files/figure-html/`.
 
 
