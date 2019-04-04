@@ -1,6 +1,6 @@
 ---
 title: "Object play"
-author: ""
+author: "Ashton Dluzneski, Sandy Rayes, Zhichun Zhao, & Rick Gilmore"
 date: "`r Sys.time()`"
 output: 
   html_document:
@@ -63,7 +63,13 @@ Adolph, K., Tamis-LeMonda, C. & Gilmore, R.O. (2017). PLAY Project: Pilot Data C
 
 <https://nyu.databrary.org/slot/18818/101800000,101929771/asset/85723/download?inline=true>
 
-# Data analysis
+# Coding
+
+## Code definitions
+
+## Coding procedure
+
+# Gather
 
 ## Export from Datavyu
 
@@ -91,16 +97,12 @@ for (i in 1:length(subs)) {
 }
 ```
 
-## Convert to CSVs
-
 Convert the Datavyu files to CSVs.
 
 ```{r}
 fl <- list.files('object-play_data', full.names = TRUE)
 csv_list <- unlist(lapply(fl, databraryapi::dv_to_csv))
 ```
-
-## Read data into R
 
 Now we can read the Datavyu files as data frames.
 
@@ -114,7 +116,7 @@ s19 <- read_csv(csv_list[5])
 s20 <- read_csv(csv_list[6])
 ```
 
-## Add duration field and subject fields
+Add duration field and subject fields.
 
 ```{r}
 s09 <- s09 %>%
@@ -158,16 +160,6 @@ object_play <- object_play %>%
   select(-sub)
 ```
 
-## Select relevant codes
-
-List the unique codes.
-
-```{r}
-unique(object_play$code)
-```
-
-There are three types of codes, `r unique(object_play$code)[1]`, `r unique(object_play$code)[2]`, and `r unique(object_play$code)[3]`.
-
 ## Import demographic data from Databrary
 
 ```{r}
@@ -175,7 +167,7 @@ login_db(params$db_account)
 vol_444 <- databraryapi::download_session_csv(vol_id = 444)
 sub_info <- vol_444 %>%
   filter(participant.ID %in% as.numeric(subs)) %>%
-  select(participant.ID, participant.gender, participant.race, 
+  select(session_id, participant.ID, participant.gender, participant.race, 
          participant.ethnicity, participant.gestational.age, 
          participant.birth.weight, group.name) %>%
   rename(ID = participant.ID, 
@@ -186,13 +178,55 @@ sub_info <- vol_444 %>%
          age_group = group.name)
 ```
 
+# Cleaning
+
+## Select relevant codes
+
+List the unique codes.
+
+```{r}
+unique(object_play$code)
+```
+
+There are three types of codes, `r unique(object_play$code)[1]`, `r unique(object_play$code)[2]`, and `r unique(object_play$code)[3]`.
+
 ## Merge demographic data with coded data
 
 ```{r}
 object_merged <- dplyr::left_join(object_play, sub_info, by = c('ID'))
 ```
 
+## Get video asset_ids for selected sessions
+
+If we want to show video excerpts, we need to access the raw videos within each participant session.
+
+```{r}
+# (videos_list <- databraryapi::list_assets_in_session(vol_id = 444, session_id = sub_info[1,]$session_id))
+# 
+# # Select video with '1-Hour' in name field?
+# vid <- videos_list %>% 
+#   filter(stringr::str_detect(name, '1\\-Hour'))
+# 
+# No, because in pilot, this name is sometimes in the experimenter view video, too.
+# observation.mp4, phone_quest.mp4, home_quest.mp4, dyadic.mp4, house_map.mp4 as better names?
+# For this example, I may have to choose asset_id s manually.
+
+vol_ids <- rep(444, n=6)
+asset_ids <- c(85471, 85705, 85730, 85812, 85853, 85875)
+session_ids <- sub_info['session_id']
+
+make_session_urls <- function(vol_id, session_id, asset_id) {
+  paste0('https://nyu.databrary.org/slot/', session_id, '/-/asset/', asset_id, '/download?inline=true')
+}
+
+for (i in 1:6) {
+  make_session_urls(vol_ids[i], session_ids$session_id[i], asset_ids[i])
+}
+```
+
 # Visualize
+
+## Graphs & tables
 
 ```{r code-durations-boxplot}
 object_merged %>% 
@@ -212,20 +246,49 @@ xtabs(formula = ~ code + ID, data = object_play) %>%
 
 Note that the figure(s) are located in `object-play_files/figure-html/`.
 
-<!-- ## Example of `r unique(object_play$code)[1]` -->
+## Links to raw videos
 
-<!-- ```{r, results='asis'} -->
-<!-- seg_index <- 1 -->
-<!-- url <- url_from_segment(code_r[seg_index,], 444, 18811, 85451) -->
-<!-- write_video_clip_html(url) -->
-<!-- ``` -->
+**Note**: These links will open only for authorized Databrary investigators or affiliates who have permission to access the relevant files.
+They are provided here for transparency.
 
-<!-- ## Example of `r unique(object_play$code)[2]` -->
+### Participant `r sub_info[1,'ID']`
 
-<!-- ```{r, results='asis'} -->
-<!-- seg_index <- 1 -->
-<!-- url <- url_from_segment(code_l[seg_index,], 444, 18811, 85451) -->
-<!-- write_video_clip_html(url) -->
-<!-- ``` -->
+```{r, results='asis'}
+url <- make_session_urls(vol_ids[1], session_ids$session_id[1], asset_ids[1])
+write_video_clip_html(url)
+```
 
-<!-- ## Example of `r unique(object_play$code)[3]`. -->
+### Participant `r sub_info[2,'ID']`
+
+```{r, results='asis'}
+url <- make_session_urls(vol_ids[2], session_ids$session_id[2], asset_ids[2])
+write_video_clip_html(url)
+```
+
+### Participant `r sub_info[3,'ID']`
+
+```{r, results='asis'}
+url <- make_session_urls(vol_ids[3], session_ids$session_id[3], asset_ids[3])
+write_video_clip_html(url)
+```
+
+### Participant `r sub_info[4,'ID']`
+
+```{r, results='asis'}
+url <- make_session_urls(vol_ids[4], session_ids$session_id[4], asset_ids[4])
+write_video_clip_html(url)
+```
+
+### Participant `r sub_info[5,'ID']`
+
+```{r, results='asis'}
+url <- make_session_urls(vol_ids[5], session_ids$session_id[5], asset_ids[5])
+write_video_clip_html(url)
+```
+
+### Participant `r sub_info[6,'ID']`
+
+```{r, results='asis'}
+url <- make_session_urls(vol_ids[6], session_ids$session_id[6], asset_ids[6])
+write_video_clip_html(url)
+```

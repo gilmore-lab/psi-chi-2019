@@ -1,4 +1,4 @@
-ID,crawl_mos,walk_mos,X,to_sleep,awake,sleep_hrs,childcare
+ID,crawl_mos,walk_mos,month_crawling_exp,to_sleep,awake,sleep_hrs,childcare
 2,7.53,11.28,3.75,20:30,7:00,10:30,Person
 3,7.03,11.05,4.02,20:45,7:20,10:35,Center
 5,8.48,11.57,3.09,19:30,6:30,11:00,Both

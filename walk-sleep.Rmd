@@ -113,7 +113,8 @@ walk_sleep %>%
   aes(x = as.numeric(sleep_hrs, "hours"), fill = childcare) +
   geom_histogram(bins = 7) +
   xlab('Night sleep (hrs)') +
-  my_theme
+  my_theme +
+  theme(legend.position = 'bottom')
 ```
 
 # Analyze

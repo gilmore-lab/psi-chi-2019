@@ -1,3 +1,5 @@
+# Given a segment from a Datavyu data.frame, return the Databrary URL
+# for that segment.
 url_from_segment <- function(segment, vol_id, slot_id, asset_id) {
 
   paste0('https://nyu.databrary.org/slot/', slot_id,
