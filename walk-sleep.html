@@ -307,15 +307,21 @@ div.tocify {
 
 <h1 class="title toc-ignore">walk-sleep</h1>
 <h4 class="author">Michelle Mendez &amp; Rick O. Gilmore</h4>
-<h4 class="date">2019-04-03 19:26:37</h4>
+<h4 class="date">2019-04-04 03:25:27</h4>
 
 </div>
 
 
+<div id="purpose" class="section level1">
+<h1><span class="header-section-number">1</span> Purpose</h1>
+<p>Using the PLAY project pilot data, compare a child’s sleeping patterns with the age they began crawling and walking and their method of childcare.</p>
+<p>To see if there is a correlation between number of hours of sleep a child gets at night, their method of childcare and the amount of time they went from crawling to walking</p>
+</div>
 <div id="gather" class="section level1">
-<h1><span class="header-section-number">1</span> Gather</h1>
-<p>Import data from a csv file stored in <code>walk-sleep_data\</code>.</p>
-<pre class="r"><code>walk_sleep &lt;- read_csv(&#39;walk-sleep_data/walk-sleep.csv&#39;)</code></pre>
+<h1><span class="header-section-number">2</span> Gather</h1>
+<p>Import data from a csv file stored in <code>walk-sleep_data/</code>.</p>
+<pre class="r"><code>data_dir &lt;- &#39;walk-sleep_data/&#39;
+walk_sleep &lt;- read_csv(&#39;walk-sleep_data/walk-sleep.csv&#39;)</code></pre>
 <pre><code>## Parsed with column specification:
 ## cols(
 ##   ID = col_double(),
@@ -329,14 +335,21 @@ div.tocify {
 ## )</code></pre>
 </div>
 <div id="clean" class="section level1">
-<h1><span class="header-section-number">2</span> Clean</h1>
+<h1><span class="header-section-number">3</span> Clean</h1>
 <p>We need to make sure that <code>crawl_mos</code>, and <code>sleep_hrs</code> are numbers.</p>
 <pre class="r"><code>walk_sleep$crawl_mos &lt;- as.numeric(walk_sleep$crawl_mos)</code></pre>
 <pre><code>## Warning: NAs introduced by coercion</code></pre>
 <pre class="r"><code>walk_sleep$sleep_hrs &lt;- lubridate::hms(walk_sleep$sleep_hrs)</code></pre>
 </div>
 <div id="visualize" class="section level1">
-<h1><span class="header-section-number">3</span> Visualize</h1>
+<h1><span class="header-section-number">4</span> Visualize</h1>
+<p>We will define some common graph theme elements here.</p>
+<pre class="r"><code>my_theme &lt;- theme(axis.text.x = element_text(size = rel(1.5)),
+                  axis.text.y = element_text(size = rel(1.5)),
+                  plot.title = element_text(size = rel(3)),
+                  axis.title = element_text(size = rel(2)),
+                  legend.text = element_text(size = rel(2))) +
+  theme_classic()</code></pre>
 <p>Hours of night sleep by age at walk onset.</p>
 <pre class="r"><code>walk_sleep %&gt;%
   ggplot() +
@@ -344,13 +357,96 @@ div.tocify {
   geom_point() +
   geom_smooth(method=&#39;lm&#39;, formula = y ~ x) +
   xlab(&#39;Walking onset (mos)&#39;) +
-  ylab(&#39;Night sleep (hrs)&#39;)</code></pre>
+  ylab(&#39;Night sleep (hrs)&#39;) +
+  my_theme</code></pre>
 <pre><code>## Warning: Removed 1 rows containing non-finite values (stat_smooth).</code></pre>
 <pre><code>## Warning: Removed 1 rows containing missing values (geom_point).</code></pre>
 <p><img src="walk-sleep_files/figure-html/walk-onset-sleep-hrs-1.png" width="672" /></p>
+<p>Let’s also look at the total time spent crawling as a predictor. We’ll define a new variable, <code>mos_crawling</code> to do this.</p>
+<pre class="r"><code>walk_sleep &lt;- walk_sleep %&gt;%
+  mutate(mos_crawling = walk_mos - crawl_mos)
+walk_sleep</code></pre>
+<pre><code>## # A tibble: 17 x 9
+##       ID crawl_mos walk_mos     X to_sleep awake sleep_hrs  childcare
+##    &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;time&gt;   &lt;tim&gt; &lt;S4: Peri&gt; &lt;chr&gt;    
+##  1     2      7.53    11.3   3.75 20:30    07:00 10H 30M 0S Person   
+##  2     3      7.03    11.0   4.02 20:45    07:20 10H 35M 0S Center   
+##  3     5      8.48    11.6   3.09 19:30    06:30 11H 0M 0S  Both     
+##  4     6     12.6     16.6   3.98 19:45    07:15 11H 30M 0S Center   
+##  5     7      7.2     11.7   4.47 20:30    07:00 10H 30M 0S None     
+##  6     9      8.1     13     4.9  16:00    06:45 14H 45M 0S Person   
+##  7    10      8       11.2   3.18 18:15    05:30 11H 15M 0S Both     
+##  8    11     NA       12.1  NA    18:45    05:00 10H 15M 0S Person   
+##  9    12      7.46    12.5   5.03 19:20    06:00 10H 40M 0S Center   
+## 10    13      7.76    11.1   3.38 19:00    05:45 10H 45M 0S Person   
+## 11    14     NA       12.2  NA    19:00    07:00 12H 0M 0S  Person   
+## 12    15      7.13    11.2   4.11 20:00    06:00 10H 0M 0S  Person   
+## 13    16      5.03    10.2   5.19 19:30    06:00 10H 30M 0S None     
+## 14    17      5.98     9.96  3.98 20:30    07:30 11H 0M 0S  Person   
+## 15    18      8.68    14     5.32 18:45    05:30 10H 45M 0S Center   
+## 16    19      6.97    12.2   5.23 19:30    06:15 10H 45M 0S Person   
+## 17    20      8.97    NA    NA    19:20    03:00 7H 40M 0S  Person   
+## # … with 1 more variable: mos_crawling &lt;dbl&gt;</code></pre>
+<p>We don’t have data for all participants here, so the sample is smaller.</p>
+<pre class="r"><code>walk_sleep %&gt;%
+  ggplot() +
+  aes(x = mos_crawling, y = as.numeric(sleep_hrs, &quot;hours&quot;)) +
+  geom_point() +
+  geom_smooth(method=&#39;lm&#39;, formula = y ~ x) +
+  xlab(&#39;Months spent crawling&#39;) +
+  ylab(&#39;Night sleep (hrs)&#39;) +
+  my_theme</code></pre>
+<pre><code>## Warning: Removed 3 rows containing non-finite values (stat_smooth).</code></pre>
+<pre><code>## Warning: Removed 3 rows containing missing values (geom_point).</code></pre>
+<p><img src="walk-sleep_files/figure-html/mos-crawling-sleep-hrs-1.png" width="672" /></p>
+<pre class="r"><code>walk_sleep %&gt;%
+  ggplot() +
+  aes(x = as.numeric(sleep_hrs, &quot;hours&quot;), fill = childcare) +
+  geom_histogram(bins = 7) +
+  xlab(&#39;Night sleep (hrs)&#39;) +
+  my_theme</code></pre>
+<p><img src="walk-sleep_files/figure-html/sleep-childcare-1.png" width="672" /></p>
 </div>
 <div id="analyze" class="section level1">
-<h1><span class="header-section-number">4</span> Analyze</h1>
+<h1><span class="header-section-number">5</span> Analyze</h1>
+<p>We test the association between <code>sleep_hrs</code> and <code>walk_mos</code> with a Pearson’s product-moment correlation.</p>
+<pre class="r"><code>c &lt;- with(walk_sleep, cor.test(as.numeric(sleep_hrs), walk_mos))
+c</code></pre>
+<pre><code>## 
+##  Pearson&#39;s product-moment correlation
+## 
+## data:  as.numeric(sleep_hrs) and walk_mos
+## t = 1.2158, df = 14, p-value = 0.2441
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  -0.2204330  0.6978418
+## sample estimates:
+##       cor 
+## 0.3090412</code></pre>
+<p>We find that there is a correlation of <span class="math inline">\(r\)</span>=0.3090412 but the 95% confidence interval of [-0.220433, 0.6978418] includes 0, so we cannot infer a relationship.</p>
+<p>We also fit a linear regression line to these data. The <code>sleep_hrs</code> variable must be made numeric before we do so.</p>
+<pre class="r"><code>lr &lt;- lm(formula = as.numeric(sleep_hrs) ~ walk_mos, data = walk_sleep)
+summary(lr)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = as.numeric(sleep_hrs) ~ walk_mos, data = walk_sleep)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -3188.9 -1801.2 -1087.8   455.6 12544.8 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)   
+## (Intercept)  30463.3     7715.2   3.948  0.00146 **
+## walk_mos       776.3      638.5   1.216  0.24415   
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 3896 on 14 degrees of freedom
+##   (1 observation deleted due to missingness)
+## Multiple R-squared:  0.09551,    Adjusted R-squared:  0.0309 
+## F-statistic: 1.478 on 1 and 14 DF,  p-value: 0.2441</code></pre>
+<p>Again, there is an expected non-zero value for the intercept, but no statistically signficant relationship between <code>sleep_hrs</code> and <code>walk_mos</code>.</p>
 </div>
 
 

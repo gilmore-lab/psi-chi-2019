@@ -40,7 +40,7 @@ library(ggplot2)
 
 # Sample selection
 
-X-mo-olds drawn from 
+12, 18, and 24-mo-olds drawn from 
 
 Adolph, K., Tamis-LeMonda, C. & Gilmore, R.O. (2017). PLAY Project: Pilot Data Collections. Databrary. Retrieved March 12, 2019 from https://nyu.databrary.org/volume/444#panel-data.
 

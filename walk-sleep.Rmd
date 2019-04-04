@@ -35,11 +35,18 @@ if (!require(ggplot2)) {
 library(ggplot2)
 ```
 
+# Purpose
+
+Using the PLAY project pilot data, compare a child’s sleeping patterns with the age they began crawling and walking and their method of childcare.
+
+To see if there is a correlation between number of hours of sleep a child gets at night, their method of childcare and the amount of time they went from crawling to walking
+
 # Gather
 
-Import data from a csv file stored in `walk-sleep_data\`.
+Import data from a csv file stored in `walk-sleep_data/`.
 
 ```{r}
+data_dir <- 'walk-sleep_data/'
 walk_sleep <- read_csv('walk-sleep_data/walk-sleep.csv')
 ```
 
@@ -54,6 +61,17 @@ walk_sleep$sleep_hrs <- lubridate::hms(walk_sleep$sleep_hrs)
 
 # Visualize
 
+We will define some common graph theme elements here.
+
+```{r}
+my_theme <- theme(axis.text.x = element_text(size = rel(1.5)),
+                  axis.text.y = element_text(size = rel(1.5)),
+                  plot.title = element_text(size = rel(3)),
+                  axis.title = element_text(size = rel(2)),
+                  legend.text = element_text(size = rel(2))) +
+  theme_classic()
+```
+
 Hours of night sleep by age at walk onset.
 
 ```{r walk-onset-sleep-hrs}
@@ -63,7 +81,58 @@ walk_sleep %>%
   geom_point() +
   geom_smooth(method='lm', formula = y ~ x) +
   xlab('Walking onset (mos)') +
-  ylab('Night sleep (hrs)')
+  ylab('Night sleep (hrs)') +
+  my_theme
+```
+
+Let's also look at the total time spent crawling as a predictor.
+We'll define a new variable, `mos_crawling` to do this.
+
+```{r}
+walk_sleep <- walk_sleep %>%
+  mutate(mos_crawling = walk_mos - crawl_mos)
+walk_sleep
+```
+
+We don't have data for all participants here, so the sample is smaller.
+
+```{r mos-crawling-sleep-hrs}
+walk_sleep %>%
+  ggplot() +
+  aes(x = mos_crawling, y = as.numeric(sleep_hrs, "hours")) +
+  geom_point() +
+  geom_smooth(method='lm', formula = y ~ x) +
+  xlab('Months spent crawling') +
+  ylab('Night sleep (hrs)') +
+  my_theme
+```
+
+```{r sleep-childcare}
+walk_sleep %>%
+  ggplot() +
+  aes(x = as.numeric(sleep_hrs, "hours"), fill = childcare) +
+  geom_histogram(bins = 7) +
+  xlab('Night sleep (hrs)') +
+  my_theme
 ```
 
 # Analyze
+
+We test the association between `sleep_hrs` and `walk_mos` with a Pearson's product-moment correlation.
+
+```{r}
+c <- with(walk_sleep, cor.test(as.numeric(sleep_hrs), walk_mos))
+c
+```
+
+We find that there is a correlation of $r$=`r c$estimate` but the 95% confidence interval of [`r c$conf.int[1]`, `r c$conf.int[2]`] includes 0, so we cannot infer a relationship.
+
+We also fit a linear regression line to these data.
+The `sleep_hrs` variable must be made numeric before we do so.
+
+```{r}
+lr <- lm(formula = as.numeric(sleep_hrs) ~ walk_mos, data = walk_sleep)
+summary(lr)
+```
+
+Again, there is an expected non-zero value for the intercept, but no statistically signficant relationship between `sleep_hrs` and `walk_mos`.

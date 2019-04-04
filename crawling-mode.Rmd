@@ -1,6 +1,6 @@
 ---
 title: "On the move: A study on gait style and preference in early infancy"
-author: "Sarah Shahriar"
+author: "Sarah Shahriar & Rick O. Gilmore"
 date: "`r Sys.time()`"
 output: 
   html_document:
@@ -35,30 +35,34 @@ if (!require(ggplot2)) {
 library(ggplot2)
 ```
 
-# Motivation
+# Purpose(s)
 
 Evaluate 'mode' of crawling in PLAY project infants.
 
-# Sample selection
+# Gather
+
+## Define sample
 
 12-mo-olds drawn from 
 
 Adolph, K., Tamis-LeMonda, C. & Gilmore, R.O. (2017). PLAY Project: Pilot Data Collections. Databrary. Retrieved March 12, 2019 from https://nyu.databrary.org/volume/444#panel-data.
 
-# Code definitions
+## Code data
 
-## Crawling vs. other locomotion
+### Code definitions
+
+#### Crawling vs. other locomotion
 
 Crawling is defined as locomotion in which the infant independently uses both right and left hands and knees with contact to the floor to move across a distance greater than 2 feet.
 
-## Hand onset
+#### Hand onset
 
 Hand onset is defined as the specific hand used to initiate hands-knees crawling.
 
-## Contralateral vs. unilateral gait
+### Contralateral vs. unilateral gait
 Contralateral gait is defined as the usage of opposite hand and knee to move independently across a distance greater than 2 feet. Unilateral gait is defined as the usage of same-side hand and knee to move independently across a distance greater than 2 feet. 
 
-# Coding procedure
+### Coding procedure
 
 1. Observe infant locomotion without inputs of coding initially.
 2. Rewatch locomotion to observe unique hand initiation and crawling mode.
@@ -72,11 +76,8 @@ Contralateral gait is defined as the usage of opposite hand and knee to move ind
     - Participant 13: <https://nyu.databrary.org/volume/444/slot/18818/->
 2. Examine each instance of locomotion using Datavyu file, code == 'l'.
 3. Utilize Datavyu to collect the total time each participant spent using a specific mode of crawling.
-4.
 
-# Data analysis
-
-## Export from Datavyu
+### Export from Datavyu
 
 The Datavyu (`.opf`) files are located in `~/Box\ Sync/b-gilmore-lab-group\ Shared/gilmore-lab/pubs/psi-chi/2019/crawl-type/`.
 
@@ -100,16 +101,12 @@ extract_dv(in_dir = data_dir, in_fn = dv_fl[1], out_dir = paste0('crawling-mode_
 extract_dv(in_dir = data_dir, in_fn = dv_fl[2], out_dir = paste0('crawling-mode_data/', subs[2]))
 ```
 
-## Convert to CSVs
-
 Convert the Datavyu files to CSVs.
 
 ```{r}
 s13_csv <- dv_to_csv(dv_dir = 'crawling-mode_data/13', vb = TRUE)
 s08_csv <- dv_to_csv(dv_dir = 'crawling-mode_data/08', vb = TRUE)
 ```
-
-## Read data into R
 
 Now we can read the Datavyu files as data frames.
 
@@ -118,6 +115,8 @@ library(tidyverse)
 s13 <- read_csv(s13_csv)
 s08 <- read_csv(s08_csv)
 ```
+
+# Clean
 
 ## Add duration field
 
@@ -171,8 +170,12 @@ crawl_init %>%
   geom_point() +
   xlab('Bout initiation hand') +
   ylab('Bout duration (secs)') +
-  ggtitle('Participant 08')
+  ggtitle('Participant 08') +
+  theme(axis.title = element_text(size = rel(2)),
+        axis.text = element_text(size = rel(1.5)),
+        plot.title = element_text(size = rel(2)))
 ```
 
 Note that the figure(s) are located in `crawling-mode_files/figure-html/`.
 
+# Analyze

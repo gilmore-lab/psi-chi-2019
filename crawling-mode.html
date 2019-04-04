@@ -9,7 +9,7 @@
 <meta name="generator" content="pandoc" />
 
 
-<meta name="author" content="Sarah Shahriar" />
+<meta name="author" content="Sarah Shahriar &amp; Rick O. Gilmore" />
 
 
 <title>On the move: A study on gait style and preference in early infancy</title>
@@ -306,46 +306,52 @@ div.tocify {
 
 
 <h1 class="title toc-ignore">On the move: A study on gait style and preference in early infancy</h1>
-<h4 class="author">Sarah Shahriar</h4>
-<h4 class="date">2019-04-03 09:48:34</h4>
+<h4 class="author">Sarah Shahriar &amp; Rick O. Gilmore</h4>
+<h4 class="date">2019-04-04 03:31:19</h4>
 
 </div>
 
 
-<div id="motivation" class="section level1">
-<h1><span class="header-section-number">1</span> Motivation</h1>
+<div id="purposes" class="section level1">
+<h1><span class="header-section-number">1</span> Purpose(s)</h1>
 <p>Evaluate ‘mode’ of crawling in PLAY project infants.</p>
 </div>
-<div id="sample-selection" class="section level1">
-<h1><span class="header-section-number">2</span> Sample selection</h1>
+<div id="gather" class="section level1">
+<h1><span class="header-section-number">2</span> Gather</h1>
+<div id="define-sample" class="section level2">
+<h2><span class="header-section-number">2.1</span> Define sample</h2>
 <p>12-mo-olds drawn from</p>
 <p>Adolph, K., Tamis-LeMonda, C. &amp; Gilmore, R.O. (2017). PLAY Project: Pilot Data Collections. Databrary. Retrieved March 12, 2019 from <a href="https://nyu.databrary.org/volume/444#panel-data" class="uri">https://nyu.databrary.org/volume/444#panel-data</a>.</p>
 </div>
-<div id="code-definitions" class="section level1">
-<h1><span class="header-section-number">3</span> Code definitions</h1>
-<div id="crawling-vs.other-locomotion" class="section level2">
-<h2><span class="header-section-number">3.1</span> Crawling vs. other locomotion</h2>
+<div id="code-data" class="section level2">
+<h2><span class="header-section-number">2.2</span> Code data</h2>
+<div id="code-definitions" class="section level3">
+<h3><span class="header-section-number">2.2.1</span> Code definitions</h3>
+<div id="crawling-vs.other-locomotion" class="section level4">
+<h4><span class="header-section-number">2.2.1.1</span> Crawling vs. other locomotion</h4>
 <p>Crawling is defined as locomotion in which the infant independently uses both right and left hands and knees with contact to the floor to move across a distance greater than 2 feet.</p>
 </div>
-<div id="hand-onset" class="section level2">
-<h2><span class="header-section-number">3.2</span> Hand onset</h2>
+<div id="hand-onset" class="section level4">
+<h4><span class="header-section-number">2.2.1.2</span> Hand onset</h4>
 <p>Hand onset is defined as the specific hand used to initiate hands-knees crawling.</p>
 </div>
-<div id="contralateral-vs.unilateral-gait" class="section level2">
-<h2><span class="header-section-number">3.3</span> Contralateral vs. unilateral gait</h2>
+</div>
+<div id="contralateral-vs.unilateral-gait" class="section level3">
+<h3><span class="header-section-number">2.2.2</span> Contralateral vs. unilateral gait</h3>
 <p>Contralateral gait is defined as the usage of opposite hand and knee to move independently across a distance greater than 2 feet. Unilateral gait is defined as the usage of same-side hand and knee to move independently across a distance greater than 2 feet.</p>
 </div>
-</div>
-<div id="coding-procedure" class="section level1">
-<h1><span class="header-section-number">4</span> Coding procedure</h1>
+<div id="coding-procedure" class="section level3">
+<h3><span class="header-section-number">2.2.3</span> Coding procedure</h3>
 <ol style="list-style-type: decimal">
 <li>Observe infant locomotion without inputs of coding initially.</li>
 <li>Rewatch locomotion to observe unique hand initiation and crawling mode.</li>
 <li>Collect specific onset and offset of infant locomotion.</li>
 <li>Compile data for each participant and compare results between subjects.</li>
 </ol>
+</div>
+</div>
 <div id="acquire-data-code-data" class="section level2">
-<h2><span class="header-section-number">4.1</span> Acquire data &amp; code data</h2>
+<h2><span class="header-section-number">2.3</span> Acquire data &amp; code data</h2>
 <ol style="list-style-type: decimal">
 <li>Download session data (video and Datavyu files) from Databrary.
 <ul>
@@ -354,14 +360,9 @@ div.tocify {
 </ul></li>
 <li>Examine each instance of locomotion using Datavyu file, code == ‘l’.</li>
 <li>Utilize Datavyu to collect the total time each participant spent using a specific mode of crawling.</li>
-<li></li>
 </ol>
-</div>
-</div>
-<div id="data-analysis" class="section level1">
-<h1><span class="header-section-number">5</span> Data analysis</h1>
-<div id="export-from-datavyu" class="section level2">
-<h2><span class="header-section-number">5.1</span> Export from Datavyu</h2>
+<div id="export-from-datavyu" class="section level3">
+<h3><span class="header-section-number">2.3.1</span> Export from Datavyu</h3>
 <p>The Datavyu (<code>.opf</code>) files are located in <code>~/Box\ Sync/b-gilmore-lab-group\ Shared/gilmore-lab/pubs/psi-chi/2019/crawl-type/</code>.</p>
 <p>Let’s list them.</p>
 <pre class="r"><code>data_dir &lt;- &#39;~/Box\ Sync/b-gilmore-lab-group\ Shared/gilmore-lab/pubs/psi-chi/2019/crawl-type/&#39;
@@ -379,23 +380,17 @@ extract_dv(in_dir = data_dir, in_fn = dv_fl[1], out_dir = paste0(&#39;crawling-m
 <pre><code>## [1] &quot;crawling-mode_data/13&quot;</code></pre>
 <pre class="r"><code>extract_dv(in_dir = data_dir, in_fn = dv_fl[2], out_dir = paste0(&#39;crawling-mode_data/&#39;, subs[2]))</code></pre>
 <pre><code>## [1] &quot;crawling-mode_data/08&quot;</code></pre>
-</div>
-<div id="convert-to-csvs" class="section level2">
-<h2><span class="header-section-number">5.2</span> Convert to CSVs</h2>
 <p>Convert the Datavyu files to CSVs.</p>
 <pre class="r"><code>s13_csv &lt;- dv_to_csv(dv_dir = &#39;crawling-mode_data/13&#39;, vb = TRUE)</code></pre>
 <pre><code>## 5 lines read from file db</code></pre>
 <pre><code>## No Datavyu file found in crawling-mode_data/13</code></pre>
 <pre><code>## Creating unique filename.</code></pre>
-<pre><code>## 1 lines written to file: crawling-mode_data/13/2019-04-03-0948-37.csv</code></pre>
+<pre><code>## 1 lines written to file: crawling-mode_data/13/2019-04-04-0331-21.csv</code></pre>
 <pre class="r"><code>s08_csv &lt;- dv_to_csv(dv_dir = &#39;crawling-mode_data/08&#39;, vb = TRUE)</code></pre>
 <pre><code>## 56 lines read from file db</code></pre>
 <pre><code>## No Datavyu file found in crawling-mode_data/08</code></pre>
 <pre><code>## Creating unique filename.</code></pre>
-<pre><code>## 51 lines written to file: crawling-mode_data/08/2019-04-03-0948-37.csv</code></pre>
-</div>
-<div id="read-data-into-r" class="section level2">
-<h2><span class="header-section-number">5.3</span> Read data into R</h2>
+<pre><code>## 51 lines written to file: crawling-mode_data/08/2019-04-04-0331-21.csv</code></pre>
 <p>Now we can read the Datavyu files as data frames.</p>
 <pre class="r"><code>library(tidyverse)
 s13 &lt;- read_csv(s13_csv)</code></pre>
@@ -415,21 +410,25 @@ s13 &lt;- read_csv(s13_csv)</code></pre>
 ##   code.value = col_character()
 ## )</code></pre>
 </div>
+</div>
+</div>
+<div id="clean" class="section level1">
+<h1><span class="header-section-number">3</span> Clean</h1>
 <div id="add-duration-field" class="section level2">
-<h2><span class="header-section-number">5.4</span> Add duration field</h2>
+<h2><span class="header-section-number">3.1</span> Add duration field</h2>
 <pre class="r"><code>s08 &lt;- s08 %&gt;%
   mutate(duration = lubridate::as.period(offset - onset, unit = &#39;sec&#39;)) %&gt;%
   filter(duration &gt; 0)</code></pre>
 </div>
 <div id="select-relevant-codes" class="section level2">
-<h2><span class="header-section-number">5.5</span> Select relevant codes</h2>
+<h2><span class="header-section-number">3.2</span> Select relevant codes</h2>
 <p>Select hands and knees crawling episodes.</p>
 <pre class="r"><code>hk &lt;- s08 %&gt;%
   filter(code == &#39;Crawling&#39;, code.value == &#39;hk&#39;)</code></pre>
 <p>Select code <code>c</code>.</p>
 </div>
 <div id="visualize-r_initiation-and-l_initiation-episode-data" class="section level2">
-<h2><span class="header-section-number">5.6</span> Visualize <code>R_Initiation</code> and <code>L_Initiation</code> episode data</h2>
+<h2><span class="header-section-number">3.3</span> Visualize <code>R_Initiation</code> and <code>L_Initiation</code> episode data</h2>
 <pre class="r"><code>code_r &lt;- s08 %&gt;% 
   filter(code == &#39;R_Initiation&#39;, code.value == &#39;c&#39;)</code></pre>
 <pre class="r"><code>code_l &lt;- s08 %&gt;% 
@@ -444,7 +443,7 @@ crawl_init$hand &lt;- stringr::str_sub(crawl_init$hand, 1, 1)</code></pre>
 </div>
 </div>
 <div id="visualize" class="section level1">
-<h1><span class="header-section-number">6</span> Visualize</h1>
+<h1><span class="header-section-number">4</span> Visualize</h1>
 <pre class="r"><code>crawl_init %&gt;% 
   ggplot() +
   aes(x = hand, y = duration) +
@@ -452,9 +451,15 @@ crawl_init$hand &lt;- stringr::str_sub(crawl_init$hand, 1, 1)</code></pre>
   geom_point() +
   xlab(&#39;Bout initiation hand&#39;) +
   ylab(&#39;Bout duration (secs)&#39;) +
-  ggtitle(&#39;Participant 08&#39;)</code></pre>
+  ggtitle(&#39;Participant 08&#39;) +
+  theme(axis.title = element_text(size = rel(2)),
+        axis.text = element_text(size = rel(1.5)),
+        plot.title = element_text(size = rel(2)))</code></pre>
 <p><img src="crawling-mode_files/figure-html/left-right-durations-hist-1.png" width="672" /></p>
 <p>Note that the figure(s) are located in <code>crawling-mode_files/figure-html/</code>.</p>
+</div>
+<div id="analyze" class="section level1">
+<h1><span class="header-section-number">5</span> Analyze</h1>
 </div>
 
 
