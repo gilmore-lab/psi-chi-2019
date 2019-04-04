@@ -179,3 +179,29 @@ crawl_init %>%
 Note that the figure(s) are located in `crawling-mode_files/figure-html/`.
 
 # Analyze
+
+# Illustrations
+
+<https://nyu.databrary.org/slot/18811/1283000,1294000/asset/85451/download?inline=true>
+
+```{r}
+source('R/write_video_clip_html.R')
+source('R/url_from_segment.R')
+```
+
+## R hand initiation
+
+```{r, results='asis'}
+seg_index <- 1
+url <- url_from_segment(code_r[seg_index,], 444, 18811, 85451)
+write_video_clip_html(url)
+```
+
+## L hand initiation
+
+```{r, results='asis'}
+seg_index <- 1
+url <- url_from_segment(code_l[seg_index,], 444, 18811, 85451)
+write_video_clip_html(url)
+```
+

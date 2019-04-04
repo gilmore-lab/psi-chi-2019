@@ -34,6 +34,9 @@ if (!require(ggplot2)) {
   install.packages('ggplot2')
 }
 library(ggplot2)
+
+source('R/write_video_clip_html.R')
+source('R/url_from_segment.R')
 ```
 
 # Motivation
@@ -209,4 +212,20 @@ xtabs(formula = ~ code + ID, data = object_play) %>%
 
 Note that the figure(s) are located in `object-play_files/figure-html/`.
 
+<!-- ## Example of `r unique(object_play$code)[1]` -->
 
+<!-- ```{r, results='asis'} -->
+<!-- seg_index <- 1 -->
+<!-- url <- url_from_segment(code_r[seg_index,], 444, 18811, 85451) -->
+<!-- write_video_clip_html(url) -->
+<!-- ``` -->
+
+<!-- ## Example of `r unique(object_play$code)[2]` -->
+
+<!-- ```{r, results='asis'} -->
+<!-- seg_index <- 1 -->
+<!-- url <- url_from_segment(code_l[seg_index,], 444, 18811, 85451) -->
+<!-- write_video_clip_html(url) -->
+<!-- ``` -->
+
+<!-- ## Example of `r unique(object_play$code)[3]`. -->
