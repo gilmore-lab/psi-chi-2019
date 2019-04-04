@@ -307,7 +307,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">On the move: A study on gait style and preference in early infancy</h1>
 <h4 class="author">Sarah Shahriar &amp; Rick O. Gilmore</h4>
-<h4 class="date">2019-04-04 05:03:19</h4>
+<h4 class="date">2019-04-04 14:44:03</h4>
 
 </div>
 
@@ -370,7 +370,8 @@ div.tocify {
 dv_fl &lt;- list.files(data_dir, pattern = &#39;\\.opf$&#39;, full.names = TRUE)
 dv_fl</code></pre>
 <pre><code>## [1] &quot;/Users/rick/Box Sync/b-gilmore-lab-group Shared/gilmore-lab/pubs/psi-chi/2019/crawl-type//PLAY_Locomotion_Code.opf.S13.opf&quot;
-## [2] &quot;/Users/rick/Box Sync/b-gilmore-lab-group Shared/gilmore-lab/pubs/psi-chi/2019/crawl-type//PLAY_Locomotion_Code.opf.S8.opf&quot;</code></pre>
+## [2] &quot;/Users/rick/Box Sync/b-gilmore-lab-group Shared/gilmore-lab/pubs/psi-chi/2019/crawl-type//PLAY_Locomotion_Code.opf.S20.opf&quot;
+## [3] &quot;/Users/rick/Box Sync/b-gilmore-lab-group Shared/gilmore-lab/pubs/psi-chi/2019/crawl-type//PLAY_Locomotion_Code.opf.S8.opf&quot;</code></pre>
 <p>Extract into subject-specific directories, e.g., <code>/13</code>, etc.</p>
 <pre class="r"><code># Extract sub number and reformat
 subs &lt;- stringr::str_match(dv_fl, pattern = &#39;\\.S([0-9]+)\\.&#39;)[,2]
@@ -379,21 +380,29 @@ subs &lt;- stringr::str_pad(subs, 2, pad=&#39;0&#39;)
 extract_dv(in_dir = data_dir, in_fn = dv_fl[1], out_dir = paste0(&#39;crawling-mode_data/&#39;, subs[1]))</code></pre>
 <pre><code>## [1] &quot;crawling-mode_data/13&quot;</code></pre>
 <pre class="r"><code>extract_dv(in_dir = data_dir, in_fn = dv_fl[2], out_dir = paste0(&#39;crawling-mode_data/&#39;, subs[2]))</code></pre>
+<pre><code>## [1] &quot;crawling-mode_data/20&quot;</code></pre>
+<pre class="r"><code>extract_dv(in_dir = data_dir, in_fn = dv_fl[3], out_dir = paste0(&#39;crawling-mode_data/&#39;, subs[3]))</code></pre>
 <pre><code>## [1] &quot;crawling-mode_data/08&quot;</code></pre>
 <p>Convert the Datavyu files to CSVs.</p>
 <pre class="r"><code>s13_csv &lt;- dv_to_csv(dv_dir = &#39;crawling-mode_data/13&#39;, vb = TRUE)</code></pre>
 <pre><code>## 5 lines read from file db</code></pre>
 <pre><code>## No Datavyu file found in crawling-mode_data/13</code></pre>
 <pre><code>## Creating unique filename.</code></pre>
-<pre><code>## 1 lines written to file: crawling-mode_data/13/2019-04-04-0503-21.csv</code></pre>
+<pre><code>## 1 lines written to file: crawling-mode_data/13/2019-04-04-1444-05.csv</code></pre>
 <pre class="r"><code>s08_csv &lt;- dv_to_csv(dv_dir = &#39;crawling-mode_data/08&#39;, vb = TRUE)</code></pre>
 <pre><code>## 56 lines read from file db</code></pre>
 <pre><code>## No Datavyu file found in crawling-mode_data/08</code></pre>
 <pre><code>## Creating unique filename.</code></pre>
-<pre><code>## 51 lines written to file: crawling-mode_data/08/2019-04-04-0503-21.csv</code></pre>
+<pre><code>## 51 lines written to file: crawling-mode_data/08/2019-04-04-1444-05.csv</code></pre>
+<pre class="r"><code>s20_csv &lt;- dv_to_csv(dv_dir = &#39;crawling-mode_data/20&#39;, vb = TRUE)</code></pre>
+<pre><code>## 25 lines read from file db</code></pre>
+<pre><code>## No Datavyu file found in crawling-mode_data/20</code></pre>
+<pre><code>## Creating unique filename.</code></pre>
+<pre><code>## 20 lines written to file: crawling-mode_data/20/2019-04-04-1444-06.csv</code></pre>
 <p>Now we can read the Datavyu files as data frames.</p>
+<p>s13 did not crawl, so using s20 instead.</p>
 <pre class="r"><code>library(tidyverse)
-s13 &lt;- read_csv(s13_csv)</code></pre>
+s20 &lt;- read_csv(s20_csv)</code></pre>
 <pre><code>## Parsed with column specification:
 ## cols(
 ##   code = col_character(),
@@ -409,6 +418,10 @@ s13 &lt;- read_csv(s13_csv)</code></pre>
 ##   offset = col_time(format = &quot;&quot;),
 ##   code.value = col_character()
 ## )</code></pre>
+<pre class="r"><code>s20$ID &lt;- 20
+s08$ID &lt;- 08
+
+crawl_init &lt;- rbind(s20, s08)</code></pre>
 </div>
 </div>
 </div>
@@ -416,47 +429,73 @@ s13 &lt;- read_csv(s13_csv)</code></pre>
 <h1><span class="header-section-number">3</span> Clean</h1>
 <div id="add-duration-field" class="section level2">
 <h2><span class="header-section-number">3.1</span> Add duration field</h2>
-<pre class="r"><code>s08 &lt;- s08 %&gt;%
+<pre class="r"><code>crawl_init &lt;- crawl_init %&gt;%
   mutate(duration = lubridate::as.period(offset - onset, unit = &#39;sec&#39;)) %&gt;%
   filter(duration &gt; 0)</code></pre>
 </div>
 <div id="select-relevant-codes" class="section level2">
 <h2><span class="header-section-number">3.2</span> Select relevant codes</h2>
-<p>Select hands and knees crawling episodes.</p>
-<pre class="r"><code>hk &lt;- s08 %&gt;%
-  filter(code == &#39;Crawling&#39;, code.value == &#39;hk&#39;)</code></pre>
 <p>Select code <code>c</code>.</p>
 </div>
 <div id="visualize-r_initiation-and-l_initiation-episode-data" class="section level2">
 <h2><span class="header-section-number">3.3</span> Visualize <code>R_Initiation</code> and <code>L_Initiation</code> episode data</h2>
-<pre class="r"><code>code_r &lt;- s08 %&gt;% 
+<pre class="r"><code>code_r &lt;- crawl_init %&gt;% 
   filter(code == &#39;R_Initiation&#39;, code.value == &#39;c&#39;)</code></pre>
-<pre class="r"><code>code_l &lt;- s08 %&gt;% 
+<pre class="r"><code>code_l &lt;- crawl_init %&gt;% 
   filter(code == &#39;L_Initiation&#39;, code.value == &#39;c&#39;)</code></pre>
 <p>Combine <code>R_Initiation</code> and <code>L_Initiation</code> into single field.</p>
-<pre class="r"><code>crawl_init &lt;- s08 %&gt;% 
+<pre class="r"><code>crawl_init &lt;- crawl_init %&gt;% 
   filter(code %in% c(&#39;R_Initiation&#39;, &#39;L_Initiation&#39;)) %&gt;%
   rename(hand = code) %&gt;%
-  select(hand, onset, offset, duration)
+  select(ID, hand, onset, offset, duration)
 
 crawl_init$hand &lt;- stringr::str_sub(crawl_init$hand, 1, 1)</code></pre>
 </div>
 </div>
 <div id="visualize" class="section level1">
 <h1><span class="header-section-number">4</span> Visualize</h1>
+<pre class="r"><code>my_theme &lt;- theme(axis.text.x = element_text(size = rel(1.5)),
+                  axis.text.y = element_text(size = rel(1.5)),
+                  plot.title = element_text(size = rel(3)),
+                  axis.title = element_text(size = rel(2)),
+                  legend.text = element_text(size = rel(2)),
+                  strip.text.x = element_text(size = rel(2))) +
+  theme_classic()</code></pre>
 <pre class="r"><code>crawl_init %&gt;% 
   ggplot() +
-  aes(x = hand, y = duration) +
+  aes(x = hand, y = duration, color = as.factor(ID)) +
   geom_boxplot() +
   geom_point() +
+  facet_grid(. ~ ID) +
   xlab(&#39;Bout initiation hand&#39;) +
   ylab(&#39;Bout duration (secs)&#39;) +
-  ggtitle(&#39;Participant 08&#39;) +
-  theme(axis.title = element_text(size = rel(2)),
-        axis.text = element_text(size = rel(1.5)),
-        plot.title = element_text(size = rel(2)))</code></pre>
+  my_theme +
+  theme(legend.position = &#39;none&#39;)</code></pre>
 <p><img src="crawling-mode_files/figure-html/left-right-durations-hist-1.png" width="672" /></p>
 <p>Note that the figure(s) are located in <code>crawling-mode_files/figure-html/</code>.</p>
+<pre class="r"><code>xtabs(formula = ~ hand + ID, data = crawl_init) %&gt;%
+  knitr::kable()</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">8</th>
+<th align="right">20</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>L</td>
+<td align="right">7</td>
+<td align="right">4</td>
+</tr>
+<tr class="even">
+<td>R</td>
+<td align="right">14</td>
+<td align="right">6</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div id="analyze" class="section level1">
 <h1><span class="header-section-number">5</span> Analyze</h1>
@@ -471,14 +510,14 @@ source(&#39;R/url_from_segment.R&#39;)</code></pre>
 <pre class="r"><code>seg_index &lt;- 1
 url &lt;- url_from_segment(code_r[seg_index,], 444, 18811, 85451)
 write_video_clip_html(url)</code></pre>
-<p></br> <video width="320" height="240" controls> <source src="https://nyu.databrary.org/slot/18811/1283000,1294000/asset/85451/download?inline=true" type="video/mp4"> </video> </br> <a href="https://nyu.databrary.org/slot/18811/1283000,1294000/asset/85451/download?inline=true" class="uri">https://nyu.databrary.org/slot/18811/1283000,1294000/asset/85451/download?inline=true</a></p>
+<p></br> <video width="320" height="240" controls> <source src="https://nyu.databrary.org/slot/18811/686000,699000/asset/85451/download?inline=true" type="video/mp4"> </video> </br> <a href="https://nyu.databrary.org/slot/18811/686000,699000/asset/85451/download?inline=true" class="uri">https://nyu.databrary.org/slot/18811/686000,699000/asset/85451/download?inline=true</a></p>
 </div>
 <div id="l-hand-initiation" class="section level2">
 <h2><span class="header-section-number">6.2</span> L hand initiation</h2>
 <pre class="r"><code>seg_index &lt;- 1
 url &lt;- url_from_segment(code_l[seg_index,], 444, 18811, 85451)
 write_video_clip_html(url)</code></pre>
-<p></br> <video width="320" height="240" controls> <source src="https://nyu.databrary.org/slot/18811/8000,17000/asset/85451/download?inline=true" type="video/mp4"> </video> </br> <a href="https://nyu.databrary.org/slot/18811/8000,17000/asset/85451/download?inline=true" class="uri">https://nyu.databrary.org/slot/18811/8000,17000/asset/85451/download?inline=true</a></p>
+<p></br> <video width="320" height="240" controls> <source src="https://nyu.databrary.org/slot/18811/1655000,1684000/asset/85451/download?inline=true" type="video/mp4"> </video> </br> <a href="https://nyu.databrary.org/slot/18811/1655000,1684000/asset/85451/download?inline=true" class="uri">https://nyu.databrary.org/slot/18811/1655000,1684000/asset/85451/download?inline=true</a></p>
 </div>
 </div>
 

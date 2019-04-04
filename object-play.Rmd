@@ -9,6 +9,7 @@ output:
     toc_float: true
     number_sections: true
     code_folding: hide
+    self_contained: false
 params:
   db_account: rogilmore@psu.edu
 ---
@@ -37,6 +38,17 @@ library(ggplot2)
 
 source('R/write_video_clip_html.R')
 source('R/url_from_segment.R')
+```
+
+We will define some common graph theme elements here.
+
+```{r}
+my_theme <- theme(axis.text.x = element_text(size = rel(1.5)),
+                  axis.text.y = element_text(size = rel(1.5)),
+                  plot.title = element_text(size = rel(3)),
+                  axis.title = element_text(size = rel(2)),
+                  legend.text = element_text(size = rel(2))) +
+  theme_classic()
 ```
 
 # Motivation
@@ -228,6 +240,51 @@ for (i in 1:6) {
 
 ## Graphs & tables
 
+### `hand_touch` code
+
+```{r hand-touch-which-hand}
+object_merged %>% 
+  filter(code == 'hand_touch') %>%
+  ggplot() +
+  aes(x = code.value, y = duration, color = age_group) +
+  geom_boxplot() +
+  geom_point() +
+  facet_wrap(ID ~ .) +
+  xlab('Grasp type') +
+  ylab('Duration (secs)') +
+  my_theme
+```
+
+```{r}
+d <- object_merged %>%
+  filter(code == 'hand_touch')
+xtabs(formula = ~ code.value + ID, data = d) %>%
+  knitr::kable()
+```
+
+### `touch_throw` code
+
+```{r touch-throw-which-hand}
+object_merged %>% 
+  filter(code == 'touch_throw') %>%
+  ggplot() +
+  aes(x = code.value, y = duration, color = age_group) +
+  geom_boxplot() +
+  geom_point() +
+  facet_wrap(ID ~ .) +
+  xlab('Grasp type') +
+  ylab('Duration (secs)') +
+  my_theme
+```
+
+```{r}
+d <- object_merged %>%
+  filter(code == 'touch_throw')
+xtabs(formula = ~ code.value + ID, data = d) %>%
+  knitr::kable()
+```
+
+
 ```{r code-durations-boxplot}
 object_merged %>% 
   ggplot() +
@@ -236,7 +293,8 @@ object_merged %>%
   geom_point() +
   facet_wrap(ID ~ .) +
   xlab('Behavior type') +
-  ylab('Duration (secs)')
+  ylab('Duration (secs)') +
+  my_theme
 ```
 
 ```{r}
